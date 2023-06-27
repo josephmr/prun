@@ -3,6 +3,7 @@ import type { AxiosResponse } from 'axios';
 import {
   getExchangeAll,
   getExchangeExchangeTicker,
+  getExchangeFull,
   getExchangeOrdersCompanyCode
 } from './generated/fio';
 
@@ -12,6 +13,7 @@ function setupClient() {
   return {
     exchange: {
       getExchangeAll: getExchangeAll<AxiosResponse<ExchangeSummary[]>>,
+      getExchangeFull: getExchangeFull<AxiosResponse<CXOB[]>>,
       getExchangeOrdersCompanyCode: getExchangeOrdersCompanyCode<AxiosResponse<CXOS[]>>,
       getExchangeExchangeTicker: getExchangeExchangeTicker<AxiosResponse<CXOB>>
     }
