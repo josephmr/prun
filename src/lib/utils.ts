@@ -1,14 +1,20 @@
-export function round(num: number) {
+/**
+ * Rounds a given number to 3 significant digits without turning into exponent notation.
+ */
+export function round(num: number): string {
   if (num === null) {
-    return Number.NaN;
+    return '';
   }
   if (num >= 100) {
-    return Math.round(num);
+    return Math.round(num).toString();
   } else {
     return num.toPrecision(3);
   }
 }
 
+/**
+ * Returns a comparator function that can be used to sort objects by successive keys.
+ */
 export function sortByKeys<T>(...keys: string[]) {
   return (left: Record<string, T>, right: Record<string, T>) => {
     for (const key of keys) {
