@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@vincjo/datatables':
+    specifier: ^1.10.7
+    version: 1.10.7(svelte@3.59.2)
   axios:
     specifier: ^1.4.0
     version: 1.4.0
@@ -1212,6 +1215,14 @@ packages:
       '@typescript-eslint/types': 5.60.1
       eslint-visitor-keys: 3.4.1
     dev: true
+
+  /@vincjo/datatables@1.10.7(svelte@3.59.2):
+    resolution: {integrity: sha512-0+ervAC9pvW6TGfkaaFMN07q3YBiaTC9LiPKzfEMn+3OlJUFBvMZGDOc4wXuFnmYLbmKOAqNiaN5zHxAjgc9Bw==}
+    peerDependencies:
+      svelte: '>=3.54.0'
+    dependencies:
+      svelte: 3.59.2
+    dev: false
 
   /abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -4255,7 +4266,6 @@ packages:
   /svelte@3.59.2:
     resolution: {integrity: sha512-vzSyuGr3eEoAtT/A6bmajosJZIUWySzY2CzB3w2pgPvnkUjGqlDnsNnA0PMO+mMAhuyMul6C2uuZzY6ELSkzyA==}
     engines: {node: '>= 8'}
-    dev: true
 
   /swagger2openapi@7.0.8:
     resolution: {integrity: sha512-upi/0ZGkYgEcLeGieoz8gT74oWHA0E7JivX7aN9mAf+Tc7BQoRBvnIGHoPDw+f9TXTW4s6kGYCZJtauP6OYp7g==}

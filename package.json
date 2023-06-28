@@ -37,6 +37,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@vincjo/datatables": "^1.10.7",
 		"axios": "^1.4.0"
 	}
 }
