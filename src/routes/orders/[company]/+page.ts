@@ -23,8 +23,8 @@ export const load = (async ({ params }) => {
     orders: response.data.map((order) => ({
       Ticker: order.Ticker,
       Orders: [
-        ...order.Buys.map((buy) => ({ ...buy, Type: 'Buy' })),
-        ...order.Sells.map((sell) => ({ ...sell, Type: 'Sell' }))
+        ...order.Buys.map((buy) => ({ ...buy, Type: 'Buy' as 'Buy' | 'Sell' })),
+        ...order.Sells.map((sell) => ({ ...sell, Type: 'Sell' as 'Buy' | 'Sell' }))
       ],
       Market: latestExchangeOrdersByMat[order.Ticker]
     }))

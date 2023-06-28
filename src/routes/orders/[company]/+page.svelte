@@ -1,9 +1,11 @@
 <script lang="ts">
+  import { Table, tableMapperValues } from '@skeletonlabs/skeleton';
+  import type { TableSource } from '@skeletonlabs/skeleton';
   import { invalidateAll } from '$app/navigation';
   import { onDestroy } from 'svelte';
   import type { PageData } from './$types';
   import { browser } from '$app/environment';
-  import { round } from '$lib/utils';
+  import { round, sortByKeys } from '$lib/utils';
 
   export let data: PageData;
 
@@ -15,12 +17,65 @@
     onDestroy(() => clearInterval(interval));
   }
 
-  $: orders = [...data.orders].sort((a, b) => (a.Ticker < b.Ticker ? -1 : 1));
+  $: tableData = data.orders
+    .flatMap((order) => {
+      return order.Orders.map((details) => {
+        const snipes =
+          details.Type === 'Buy'
+            ? order.Market.BuyingOrders.filter((otherOrder) => otherOrder.ItemCost > details.Cost)
+            : order.Market.SellingOrders.filter((otherOrder) => otherOrder.ItemCost < details.Cost);
+        return {
+          material: order.Market.MaterialTicker,
+          exchange: order.Market.ExchangeCode,
+          type: details.Type,
+          count: details.Count,
+          cost: round(details.Cost),
+          bid: round(order.Market.Bid),
+          ask: round(order.Market.Ask),
+          spread: round(order.Market.Ask - order.Market.Bid),
+          snipe: snipes.length
+            ? `${snipes.reduce((acc, o) => acc + o.ItemCount, 0)} @ ± ${
+                details.Type === 'Buy'
+                  ? round(order.Market.Bid - details.Cost)
+                  : round(details.Cost - order.Market.Ask)
+              }`
+            : ''
+        };
+      });
+    })
+    .sort(sortByKeys('material', 'exchange', 'type'));
+
+  $: tableSource = {
+    head: ['MAT', 'CX', 'TYPE', 'AMT', 'PRICE', 'BID', 'ASK', 'SPRD', 'OUTBID'],
+    body: tableMapperValues(tableData, [
+      'material',
+      'exchange',
+      'type',
+      'count',
+      'cost',
+      'bid',
+      'ask',
+      'spread',
+      'snipe'
+    ]),
+    meta: tableMapperValues(tableData, [
+      'material',
+      'exchange',
+      'type',
+      'count',
+      'cost',
+      'bid',
+      'ask',
+      'spread',
+      'snipe'
+    ])
+  };
 </script>
 
 <div class="max-w-4xl mx-auto">
   <h1 class="text-2xl pb-8 pt-8">Orders for {data.company}</h1>
-  <div class="table shadow-lg border border-slate-200 dark:border-slate-400/20">
+  <Table source={tableSource} />
+  <!-- <div class="table shadow-lg border border-slate-200 dark:border-slate-400/20">
     <div class="table-header-group">
       <div
         class="table-cell p-4 font-medium text-left border-b-4 border-r border-slate-200 dark:border-slate-400/20"
@@ -147,7 +202,7 @@
         </div>
       {/each}
     {/each}
-  </div>
+  </div> -->
 </div>
 
 <style lang="postcss">
