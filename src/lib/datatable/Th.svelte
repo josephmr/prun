@@ -12,8 +12,8 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<td
-  class="sticky top-0 p-4 pt-2 pb-2 font-medium text-left border-b-2 border-surface-200 dark:border-surface-400 dark:hover:bg-surface-hover-token bg-surface-900"
+<div
+  class="sticky top-0 p-4 pt-2 pb-2 font-medium text-left border-b-2 border-surface-400 hover:bg-surface-700 bg-surface-900"
   class:cursor-pointer={orderBy}
   on:click={() => handler.sort(orderBy)}
   class:active={$sorted.identifier === identifier}
@@ -34,4 +34,4 @@
       {/if}
     {/if}
   </div>
-</td>
+</div>
