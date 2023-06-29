@@ -26,7 +26,7 @@
     </div>
   {/if}
 
-  <div bind:this={element} style="height:calc(100% - {height}px)">
+  <div bind:this={element} style="height:calc(100% - {height}px)" class="bg-surface-800">
     <slot />
   </div>
 </div>
