@@ -1,21 +1,20 @@
 <script lang="ts">
   import { invalidateAll } from '$app/navigation';
-  import { onDestroy } from 'svelte';
+  import { onMount } from 'svelte';
   import type { PageData } from './$types';
-  import { browser } from '$app/environment';
   import { round } from '$lib/utils';
   import { DataHandler } from '@vincjo/datatables';
   import { Datatable } from '$lib/datatable';
 
   export let data: PageData;
 
-  if (browser) {
+  onMount(() => {
     const interval = setInterval(() => {
       invalidateAll();
     }, 10000);
 
-    onDestroy(() => clearInterval(interval));
-  }
+    return () => clearInterval(interval);
+  });
 
   const handler = new DataHandler();
 
@@ -72,6 +71,7 @@
   $: {
     handler.setRows(
       data.orders.flatMap((order) => {
+        const [material, exchange] = order.Ticker.split('.');
         return order.Orders.map((details) => {
           const snipes =
             details.Type === 'Buy'
@@ -84,8 +84,8 @@
               ? order.Market.Bid - details.Cost
               : details.Cost - order.Market.Ask;
           return {
-            material: order.Market.MaterialTicker,
-            exchange: order.Market.ExchangeCode,
+            material,
+            exchange,
             type: details.Type,
             count: details.Count,
             cost: details.Cost,
