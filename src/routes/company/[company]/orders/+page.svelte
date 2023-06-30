@@ -4,7 +4,7 @@
   import type { PageData } from './$types';
   import { round } from '$lib/utils';
   import { DataHandler } from '@vincjo/datatables';
-  import { Datatable } from '$lib/datatable';
+  import { Datatable } from '$lib/components/datatable';
 
   export let data: PageData;
 

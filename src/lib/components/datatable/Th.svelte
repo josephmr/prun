@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { DataHandler, OrderBy, Row } from '@vincjo/datatables';
-  import Icon from '$lib/icons/Icon.svelte';
+  import Icon from '$lib/components/icons/Icon.svelte';
 
   type T = $$Generic<Row>;
 
@@ -23,15 +23,17 @@
       <slot />
     </div>
     {#if orderBy}
-      {#if $sorted.identifier === identifier}
-        {#if $sorted.direction === 'asc'}
-          <Icon icon="arrow-small-up" />
+      <div class="flex justify-center flex-col pl-2">
+        {#if $sorted.identifier === identifier}
+          {#if $sorted.direction === 'asc'}
+            <Icon icon="arrow-small-up" />
+          {:else}
+            <Icon icon="arrow-small-down" />
+          {/if}
         {:else}
-          <Icon icon="arrow-small-down" />
+          <Icon icon="arrows-up-down" />
         {/if}
-      {:else}
-        <Icon icon="arrows-up-down" />
-      {/if}
+      </div>
     {/if}
   </div>
 </div>

@@ -27,3 +27,14 @@ export function sortByKeys<T>(...keys: string[]) {
     return 0;
   };
 }
+
+export function reduceRecord<K extends string | number | symbol, V, T>(
+  record: Record<K, V>,
+  fn: (key: keyof Record<K, V>) => T
+): Record<K, T> {
+  let acc: any = {};
+  for (const key of Object.keys(record) as K[]) {
+    acc[key] = fn(key);
+  }
+  return acc;
+}
