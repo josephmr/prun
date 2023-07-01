@@ -1,16 +1,16 @@
 import type { PageLoad } from './$types';
-import client, { type CXOB } from '$lib/api/fio';
+import { exchangeOrdersForCompany, exchangeFull, exchangeForTicker, type CXOB } from '$lib/api/fio';
 
-export const load = (async ({ params }) => {
-  const response = await client.exchange.getExchangeOrdersCompanyCode(params.company);
+export const load = (async ({ params, fetch }) => {
+  const data = await exchangeOrdersForCompany(params.company, { fetch });
   let latestExchangeOrders;
-  if (response.data.length > 5) {
-    latestExchangeOrders = (await client.exchange.getExchangeFull()).data;
+  if (data.length > 5) {
+    latestExchangeOrders = await exchangeFull({ fetch });
   } else {
     latestExchangeOrders = await Promise.all(
-      response.data.map(async (order) => {
-        const response = await client.exchange.getExchangeExchangeTicker(order.Ticker);
-        return response.data;
+      data.map(async (order) => {
+        const data = await exchangeForTicker(order.Ticker, { fetch });
+        return data;
       })
     );
   }
@@ -20,7 +20,7 @@ export const load = (async ({ params }) => {
   }, {} as { [ticker: string]: CXOB });
   return {
     company: params.company,
-    orders: response.data.map((order) => ({
+    orders: data.map((order) => ({
       Ticker: order.Ticker,
       Orders: [
         ...order.Buys.map((buy) => ({ ...buy, Type: 'Buy' as 'Buy' | 'Sell' })),

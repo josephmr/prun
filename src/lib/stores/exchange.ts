@@ -1,5 +1,4 @@
-import type { CXOB } from '$lib/api/fio';
-import client from '$lib/api/fio';
+import { exchangeForTicker, exchangeFull, type CXOB } from '$lib/api/fio';
 import { readable } from 'svelte/store';
 
 function jitter(ms: number) {
@@ -24,9 +23,9 @@ class ExchangeStore {
     }
     this.inFlight.add(ticker);
     setTimeout(async () => {
-      const resp = await client.exchange.getExchangeExchangeTicker(ticker);
+      const data = await exchangeForTicker(ticker);
       this.inFlight.delete(ticker);
-      this.setTicker(ticker, resp.data);
+      this.setTicker(ticker, data);
     }, jitter(5 * 60 * 1000));
   }
 
@@ -37,8 +36,8 @@ class ExchangeStore {
 
   async init(setter: (value: ExchangeStore) => void) {
     this.setter = setter;
-    const response = await client.exchange.getExchangeFull();
-    this.data = response.data.reduce((acc, v) => {
+    const data = await exchangeFull();
+    this.data = data.reduce((acc, v) => {
       acc[v.MaterialTicker + '.' + v.ExchangeCode] = v;
       return acc;
     }, {} as Record<string, CXOB>);
