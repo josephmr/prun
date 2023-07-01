@@ -1,26 +1,30 @@
-import axios from 'axios';
-import type { AxiosResponse } from 'axios';
-import {
-  getExchangeAll,
-  getExchangeExchangeTicker,
-  getExchangeFull,
-  getExchangeOrdersCompanyCode
-} from './generated/fio';
+const baseUrl = `https://rest.fnar.net`;
 
-axios.defaults.baseURL = `https://rest.fnar.net`;
-
-function setupClient() {
-  return {
-    exchange: {
-      getExchangeAll: getExchangeAll<AxiosResponse<ExchangeSummary[]>>,
-      getExchangeFull: getExchangeFull<AxiosResponse<CXOB[]>>,
-      getExchangeOrdersCompanyCode: getExchangeOrdersCompanyCode<AxiosResponse<CXOS[]>>,
-      getExchangeExchangeTicker: getExchangeExchangeTicker<AxiosResponse<CXOB>>
-    }
-  };
+interface FetchOptions {
+  fetch?: typeof fetch;
 }
 
-const client = setupClient();
+async function request<T>(slug: string, options: FetchOptions | undefined): Promise<T> {
+  const response = await (options?.fetch || fetch)(`${baseUrl}/${slug}`);
+  const data = await response.json();
+  return data;
+}
+
+export async function exchangeFull(options?: FetchOptions): Promise<CXOB[]> {
+  return request('exchange/full', options);
+}
+
+export async function exchangeAll(options?: FetchOptions): Promise<ExchangeSummary> {
+  return request('exchange/all', options);
+}
+
+export async function exchangeOrdersForCompany(company: string, options?: FetchOptions): Promise<CXOS[]> {
+  return request(`exchange/orders/${company}`, options);
+}
+
+export async function exchangeForTicker(ticker: string, options?: FetchOptions): Promise<CXOB> {
+  return request(`exchange/${ticker}`, options);
+}
 
 interface ExchangeSummary {
   MaterialTicker: string;
@@ -91,5 +95,3 @@ export interface CXOBOrder {
   ItemCount: number;
   ItemCost: number;
 }
-
-export default client;
