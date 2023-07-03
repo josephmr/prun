@@ -1,19 +1,12 @@
 import type { PageLoad } from './$types';
-import { exchangeOrdersForCompany, exchangeFull, exchangeForTicker, type CXOB } from '$lib/api/fio';
+import { exchangeOrdersForCompany, exchangeFull, type CXOB } from '$lib/api/fio';
+import { getApiKey } from '$lib/stores/fio';
 
-export const load = (async ({ params, fetch }) => {
-  const data = await exchangeOrdersForCompany(params.company, { fetch });
-  let latestExchangeOrders;
-  if (data.length > 5) {
-    latestExchangeOrders = await exchangeFull({ fetch });
-  } else {
-    latestExchangeOrders = await Promise.all(
-      data.map(async (order) => {
-        const data = await exchangeForTicker(order.Ticker, { fetch });
-        return data;
-      })
-    );
-  }
+export const load = (async ({ params, fetch, parent, depends }) => {
+  const apiKey = getApiKey(await parent());
+  depends('orders:');
+  const data = await exchangeOrdersForCompany(params.company, { fetch, apiKey });
+  const latestExchangeOrders = await exchangeFull({ fetch });
   const latestExchangeOrdersByMat = latestExchangeOrders.reduce((acc, v) => {
     acc[`${v.MaterialTicker}.${v.ExchangeCode}`] = v;
     return acc;

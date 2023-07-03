@@ -37,6 +37,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@square/svelte-store": "^1.0.17",
 		"@vincjo/datatables": "^1.10.7",
 		"axios": "^1.4.0"
 	}

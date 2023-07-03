@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { invalidateAll } from '$app/navigation';
+  import { invalidate } from '$app/navigation';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import { round } from '$lib/utils';
@@ -10,7 +10,7 @@
 
   onMount(() => {
     const interval = setInterval(() => {
-      invalidateAll();
+      invalidate('orders:');
     }, 10000);
 
     return () => clearInterval(interval);

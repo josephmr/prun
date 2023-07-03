@@ -2,10 +2,15 @@ const baseUrl = `https://rest.fnar.net`;
 
 interface FetchOptions {
   fetch?: typeof fetch;
+  apiKey?: string;
 }
 
 async function request<T>(slug: string, options: FetchOptions | undefined): Promise<T> {
-  const response = await (options?.fetch || fetch)(`${baseUrl}/${slug}`);
+  const response = await (options?.fetch || fetch)(`${baseUrl}/${slug}`, options?.apiKey ? {
+    headers: {
+      'Authorization': options.apiKey
+    }
+  } : {});
   const data = await response.json();
   return data;
 }
@@ -24,6 +29,14 @@ export async function exchangeOrdersForCompany(company: string, options?: FetchO
 
 export async function exchangeForTicker(ticker: string, options?: FetchOptions): Promise<CXOB> {
   return request(`exchange/${ticker}`, options);
+}
+
+export async function productionForUser(username: string, options?: FetchOptions): Promise<Production[]> {
+  return request(`production/${username}`, options);
+}
+
+interface Production {
+  StandardRecipeName: string;
 }
 
 interface ExchangeSummary {

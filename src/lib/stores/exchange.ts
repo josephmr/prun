@@ -1,5 +1,5 @@
 import { exchangeForTicker, exchangeFull, type CXOB } from '$lib/api/fio';
-import { readable } from 'svelte/store';
+import { readable } from '@square/svelte-store';
 
 function jitter(ms: number) {
   const max = ms + 0.25 * ms;

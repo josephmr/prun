@@ -1,13 +1,14 @@
 <script lang="ts">
   import { reduceRecord } from '$lib/utils';
+  import { auth } from '$lib/stores/fio';
 
   export let parent: any;
 
   const formData = {
-    username: '',
-    apiKey: ''
+    apiKey: $auth?.apiKey ?? '',
+    username: $auth?.username ?? ''
   };
-  let shouldShowValidation = reduceRecord(formData, (k) => false);
+  let shouldShowValidation = reduceRecord(formData, () => false);
   type FormKey = keyof typeof formData;
 
   function isValid(): boolean {
@@ -23,10 +24,10 @@
 
   function submit() {
     if (!isValid()) {
-      shouldShowValidation = reduceRecord(formData, (k) => true);
+      shouldShowValidation = reduceRecord(formData, () => true);
       return;
     }
-    // TODO save credentials in cookie
+    auth.set(formData);
     parent.onClose();
   }
 
