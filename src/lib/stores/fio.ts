@@ -1,5 +1,5 @@
-import type { Cookies } from "@sveltejs/kit";
-import { persisted } from "@square/svelte-store";
+import type { Cookies } from '@sveltejs/kit';
+import { persisted } from '@square/svelte-store';
 
 interface FIOAuth {
   username: string;

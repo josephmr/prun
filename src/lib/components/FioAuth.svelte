@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { modalStore, type ModalSettings, type ModalComponent } from '@skeletonlabs/skeleton';
+  import { modalStore, type ModalSettings } from '@skeletonlabs/skeleton';
   import Icon from './icons/Icon.svelte';
   import FioAuthModal from './FioAuthModal.svelte';
 

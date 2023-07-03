@@ -6,11 +6,16 @@ interface FetchOptions {
 }
 
 async function request<T>(slug: string, options: FetchOptions | undefined): Promise<T> {
-  const response = await (options?.fetch || fetch)(`${baseUrl}/${slug}`, options?.apiKey ? {
-    headers: {
-      'Authorization': options.apiKey
-    }
-  } : {});
+  const response = await (options?.fetch || fetch)(
+    `${baseUrl}/${slug}`,
+    options?.apiKey
+      ? {
+          headers: {
+            Authorization: options.apiKey
+          }
+        }
+      : {}
+  );
   const data = await response.json();
   return data;
 }
@@ -23,7 +28,10 @@ export async function exchangeAll(options?: FetchOptions): Promise<ExchangeSumma
   return request('exchange/all', options);
 }
 
-export async function exchangeOrdersForCompany(company: string, options?: FetchOptions): Promise<CXOS[]> {
+export async function exchangeOrdersForCompany(
+  company: string,
+  options?: FetchOptions
+): Promise<CXOS[]> {
   return request(`exchange/orders/${company}`, options);
 }
 
@@ -31,12 +39,15 @@ export async function exchangeForTicker(ticker: string, options?: FetchOptions):
   return request(`exchange/${ticker}`, options);
 }
 
-export async function productionForUser(username: string, options?: FetchOptions): Promise<Production[]> {
+export async function productionForUser(
+  username: string,
+  options?: FetchOptions
+): Promise<Production[]> {
   return request(`production/${username}`, options);
 }
 
 interface Production {
-  StandardRecipeName: string;
+  Type: string;
 }
 
 interface ExchangeSummary {
