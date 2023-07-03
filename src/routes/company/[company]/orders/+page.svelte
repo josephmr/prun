@@ -10,7 +10,7 @@
 
   onMount(() => {
     const interval = setInterval(() => {
-      invalidate('orders:');
+      invalidate('fio:');
     }, 10000);
 
     return () => clearInterval(interval);
