@@ -35,7 +35,10 @@ export async function exchangeOrdersForCompany(
   return request(`exchange/orders/${company}`, options);
 }
 
-export async function exchangeForTicker(ticker: string, options?: FetchOptions): Promise<CXOB> {
+export async function exchangeForTicker(
+  ticker: MaterialTicker,
+  options?: FetchOptions
+): Promise<CXOB> {
   return request(`exchange/${ticker}`, options);
 }
 
@@ -46,13 +49,64 @@ export async function productionForUser(
   return request(`production/${username}`, options);
 }
 
+export type MaterialTicker = string;
+export type CompoundTicker = string;
+export type ExchangeCode = string;
+
+export function parseCompoundTicker(ticker: CompoundTicker): [MaterialTicker, ExchangeCode] {
+  return ticker.split('.') as [MaterialTicker, ExchangeCode];
+}
+
+export function toCompoundTicker(ticker: MaterialTicker, ex: ExchangeCode): CompoundTicker {
+  return `${ticker}.${ex}` as CompoundTicker;
+}
+
+interface ProductionMaterial {
+  ProductionLineInputId: string;
+  MaterialName: string;
+  MaterialTicker: MaterialTicker;
+  MaterialId: string;
+  MaterialAmount: number;
+}
+
+interface ProductionOrder {
+  Inputs: ProductionMaterial[];
+  Outputs: ProductionMaterial[];
+  ProductionLineOrderId: string;
+  CreatedEpochMs: number;
+  StartedEpochMs: number | null;
+  CompletionEpochMs: number | null;
+  DurationMs: number;
+  LastUpdatedEpochMs: number | null;
+  CompletedPercentage: number | null;
+  IsHalted: boolean;
+  Recurring: boolean;
+  StandardRecipeName: string;
+  ProductionFee: number;
+  ProductionFeeCurrency: string;
+  ProductionFeeCollectorId: string;
+  ProductionFeeCollectorName: string;
+  ProductionFeeCollectorCode: string;
+}
+
 interface Production {
+  Orders: ProductionOrder[];
+  ProductionLineId: string;
+  SiteId: string;
+  PlanetId: string;
+  PlanetNaturalId: string;
+  PlanetName: string;
   Type: string;
+  Capacity: number;
+  Efficiency: number;
+  Condition: number;
+  UserNameSubmitted: string;
+  Timestamp: string;
 }
 
 interface ExchangeSummary {
-  MaterialTicker: string;
-  ExchangeCode: string;
+  MaterialTicker: MaterialTicker;
+  ExchangeCode: ExchangeCode;
   MMBuy: number | null;
   MMSell: number | null;
   PriceAverage: number;
@@ -70,7 +124,7 @@ interface CXOSDetails {
 }
 
 interface CXOS {
-  Ticker: string;
+  Ticker: CompoundTicker;
   Buys: CXOSDetails[];
   Sells: CXOSDetails[];
 }
@@ -80,10 +134,10 @@ export interface CXOB {
   SellingOrders: CXOBOrder[];
   CXDataModelId: string;
   MaterialName: string;
-  MaterialTicker: string;
+  MaterialTicker: MaterialTicker;
   MaterialId: string;
   ExchangeName: string;
-  ExchangeCode: string;
+  ExchangeCode: ExchangeCode;
   Currency: string;
   Previous: number | null; // TODO figure out
   Price: number;

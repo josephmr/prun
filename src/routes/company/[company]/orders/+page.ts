@@ -1,5 +1,11 @@
 import type { PageLoad } from './$types';
-import { exchangeOrdersForCompany, exchangeFull, type CXOB } from '$lib/api/fio';
+import {
+  exchangeOrdersForCompany,
+  exchangeFull,
+  type CXOB,
+  type CompoundTicker,
+  toCompoundTicker
+} from '$lib/api/fio';
 import { getApiKey } from '$lib/stores/fio';
 
 export const load = (async ({ params, fetch, parent, depends }) => {
@@ -12,9 +18,9 @@ export const load = (async ({ params, fetch, parent, depends }) => {
   const latestExchangeOrders = await exchangeFull(opts);
 
   const latestExchangeOrdersByMat = latestExchangeOrders.reduce((acc, v) => {
-    acc[`${v.MaterialTicker}.${v.ExchangeCode}`] = v;
+    acc[toCompoundTicker(v.MaterialTicker, v.ExchangeCode)] = v;
     return acc;
-  }, {} as { [ticker: string]: CXOB });
+  }, {} as { [ticker: CompoundTicker]: CXOB });
 
   return {
     company: params.company,
