@@ -1,12 +1,15 @@
 <script lang="ts">
   import { reduceRecord } from '$lib/utils';
-  import { auth } from '$lib/stores/fio';
+  import { setAuthInfo } from '$lib/auth';
+  import { invalidate } from '$app/navigation';
 
   export let parent: any;
+  export let username: string;
+  export let apiKey: string;
 
   const formData = {
-    apiKey: $auth?.apiKey ?? '',
-    username: $auth?.username ?? ''
+    apiKey,
+    username
   };
   let shouldShowValidation = reduceRecord(formData, () => false);
   type FormKey = keyof typeof formData;
@@ -22,12 +25,13 @@
     };
   }
 
-  function submit() {
+  async function submit() {
     if (!isValid()) {
       shouldShowValidation = reduceRecord(formData, () => true);
       return;
     }
-    auth.set(formData);
+    setAuthInfo(formData);
+    await invalidate('auth:');
     parent.onClose();
   }
 

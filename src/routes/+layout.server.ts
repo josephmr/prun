@@ -1,9 +1,10 @@
-import { getApiKey } from '$lib/stores/fio';
+import { getAuthInfo } from '$lib/auth';
 import type { LayoutServerLoad } from './$types';
 
-export const load = (async ({ cookies }) => {
-  const apiKey = getApiKey(cookies);
+export const load = (async ({ cookies, depends }) => {
+  depends('auth:');
+  const authInfo = getAuthInfo(cookies);
   return {
-    apiKey
+    authInfo
   };
 }) satisfies LayoutServerLoad;

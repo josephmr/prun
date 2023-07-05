@@ -1,13 +1,20 @@
 <script lang="ts">
   import { modalStore, type ModalSettings } from '@skeletonlabs/skeleton';
-  import Icon from './icons/Icon.svelte';
-  import FioAuthModal from './FioAuthModal.svelte';
+  import Icon from '$lib/components/icons/Icon.svelte';
+  import FioAuthModal from '$lib/components/FioAuthModal.svelte';
+  import type { FIOAuth } from '$lib/auth';
 
-  let authed = false;
-  let modal: ModalSettings = {
+  export let authInfo: FIOAuth | undefined;
+  $: authed = !!authInfo;
+  $: modal = {
     type: 'component',
-    component: { ref: FioAuthModal }
-  };
+    component: {
+      ref: FioAuthModal,
+      props: {
+        ...authInfo
+      }
+    }
+  } as ModalSettings;
 </script>
 
 <button
